@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dress-up Game</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        background: #0f0f1a;
+        color: #eee;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .stage {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        position: relative;
+    }
+
+    .character {
+        position: relative;
+        width: 300px;
+        height: 560px;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+    }
+
+    .layer {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: all 0.25s ease;
+    }
+
+    /* Hình dạng nhân vật tạm (sẽ thay bằng ảnh sau) */
+    #skin {
+        width: 160px;
+        height: 480px;
+        top: 40px;
+        border-radius: 80px 80px 40px 40px;
+        z-index: 1;
+    }
+    #eyes {
+        width: 90px;
+        height: 28px;
+        top: 110px;
+        border-radius: 50%;
+        z-index: 5;
+    }
+    #hair {
+        width: 200px;
+        height: 180px;
+        top: 20px;
+        border-radius: 100px 100px 20px 20px;
+        z-index: 10;
+    }
+    #underwear {
+        width: 140px;
+        height: 90px;
+        top: 280px;
+        border-radius: 20px;
+        z-index: 3;
+    }
+    #bottom {
+        width: 150px;
+        height: 140px;
+        top: 290px;
+        border-radius: 15px;
+        z-index: 4;
+    }
+    #top {
+        width: 155px;
+        height: 120px;
+        top: 180px;
+        border-radius: 20px 20px 10px 10px;
+        z-index: 4;
+    }
+    #socks {
+        width: 130px;
+        height: 130px;
+        top: 400px;
+        border-radius: 10px;
+        z-index: 2;
+    }
+    #shoes {
+        width: 140px;
+        height: 45px;
+        top: 510px;
+        border-radius: 20px 20px 8px 8px;
+        z-index: 6;
+    }
+
+    .panel {
+        width: 360px;
+        background: #16213e;
+        padding: 18px 20px;
+        overflow-y: auto;
+        border-left: 1px solid #0f3460;
+    }
+
+    h2 {
+        font-size: 15px;
+        margin: 16px 0 8px;
+        color: #e94560;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    button {
+        background: #0f3460;
+        color: white;
+        border: none;
+        padding: 7px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+    button:hover { background: #e94560; transform: translateY(-1px); }
+    button.active { background: #e94560; box-shadow: 0 0 0 2px #fff3; }
+
+    .action-btns {
+        display: flex;
+        gap: 10px;
+        margin-top: 22px;
+    }
+    .action-btns button {
+        flex: 1;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .nude-btn { background: #c0392b; }
+    .nude-btn:hover { background: #e74c3c; }
+    .random-btn { background: #8e44ad; }
+    .random-btn:hover { background: #9b59b6; }
+
+    .note {
+        font-size: 12px;
+        color: #888;
+        margin-top: 25px;
+        line-height: 1.5;
+        border-top: 1px solid #0f3460;
+        padding-top: 15px;
+    }
+</style>
+</head>
+<body>
+
+<div class="stage">
+    <div class="character" id="character">
+        <div class="layer" id="skin"></div>
+        <div class="layer" id="eyes"></div>
+        <div class="layer" id="underwear"></div>
+        <div class="layer" id="bottom"></div>
+        <div class="layer" id="top"></div>
+        <div class="layer" id="socks"></div>
+        <div class="layer" id="shoes"></div>
+        <div class="layer" id="hair"></div>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Màu da</h2>
+    <div class="btn-group" id="skin-btns"></div>
+
+    <h2>Kiểu mắt</h2>
+    <div class="btn-group" id="eyes-btns"></div>
+
+    <h2>Kiểu tóc</h2>
+    <div class="btn-group" id="hair-btns"></div>
+
+    <h2>Nội y</h2>
+    <div class="btn-group" id="underwear-btns"></div>
+
+    <h2>Áo</h2>
+    <div class="btn-group" id="top-btns"></div>
+
+    <h2>Quần / Váy</h2>
+    <div class="btn-group" id="bottom-btns"></div>
+
+    <h2>Tất</h2>
+    <div class="btn-group" id="socks-btns"></div>
+
+    <h2>Giày</h2>
+    <div class="btn-group" id="shoes-btns"></div>
+
+    <div class="action-btns">
+        <button class="random-btn" onclick="randomOutfit()">Random</button>
+        <button class="nude-btn" onclick="goNude()">Cởi hết</button>
+    </div>
+
+    <div class="note">
+        Hiện đang dùng màu giả lập.<br>
+        Khi bạn gửi ảnh PNG (nền trong suốt), mình sẽ thay thành ảnh thật.
+    </div>
+</div>
+
+<script>
+const items = {
+    skin: [
+        { name: "Sáng", color: "#f5d0c5" },
+        { name: "Hồng", color: "#f3c6b3" },
+        { name: "Trung bình", color: "#e0ac69" },
+        { name: "Ngăm", color: "#8d5524" },
+        { name: "Rất ngăm", color: "#4a2c0b" }
+    ],
+    eyes: [
+        { name: "Xanh", color: "#4a90e2" },
+        { name: "Xanh lá", color: "#2ecc71" },
+        { name: "Tím", color: "#9b59b6" },
+        { name: "Nâu", color: "#a0522d" },
+        { name: "Đỏ", color: "#e74c3c" }
+    ],
+    hair: [
+        { name: "Đen", color: "#1a1a1a" },
+        { name: "Nâu", color: "#5d4037" },
